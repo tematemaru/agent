@@ -1,0 +1,1 @@
+# PoC Local llm agend based on ollama
