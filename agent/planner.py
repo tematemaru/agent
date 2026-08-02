@@ -2,7 +2,10 @@ from .models import AgentState
 
 
 class Planner:
-    def build_prompt(self, runtime_state):
+    def build_prompt(self, runtime_state, memory=None):
+        scratchpad = "\n".join(runtime_state.scratchpad) or "(empty)"
+        recent_tool_outputs = memory.render() if memory else "(empty)"
+
         return f"""
 Goal:
 {runtime_state.goal}
@@ -10,8 +13,11 @@ Goal:
 Current step:
 {runtime_state.current_step}
 
-Scratchpad:
-{runtime_state.scratchpad}
+Scratchpad (reasoning history):
+{scratchpad}
+
+Recent tool outputs:
+{recent_tool_outputs}
 
 You must decide:
 - next tool call

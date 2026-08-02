@@ -12,7 +12,7 @@ class FileSystemTools:
             os.path.join(self.workspace, path)
         )
 
-        if not full_path.startswith(self.workspace):
+        if os.path.commonpath([full_path, self.workspace]) != self.workspace:
             raise PermissionError("Path traversal detected")
 
         return full_path

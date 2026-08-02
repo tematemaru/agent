@@ -22,19 +22,31 @@ registry.register("write_file", fs.write_file)
 registry.register("read_file", fs.read_file)
 registry.register("run_shell", shell.run)
 
+verifier = Verifier()
+
 agent = Agent(
     llm=LLMClient(),
     planner=Planner(),
-    executor=Executor(registry),
-    verifier=Verifier(),
+    executor=Executor(registry, verifier=verifier),
+    verifier=verifier,
     memory=WorkingMemory(),
     telemetry=TrajectoryLogger(),
 )
 
 
 if __name__ == "__main__":
-    task = input("Task: ")
+    EXIT_COMMANDS = {"exit", "quit", "q"}
 
-    result = agent.run(task)
+    while True:
+        try:
+            task = input("Task: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
 
-    print(result)
+        if not task:
+            continue
+
+        if task.lower() in EXIT_COMMANDS:
+            break
+
+        result = agent.run(task)

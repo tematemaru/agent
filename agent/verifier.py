@@ -1,8 +1,6 @@
 class Verifier:
-    def verify_write(self, fs, path: str, expected: str):
-        actual = fs.read_file(path)
-
+    def verify_write(self, actual: str, expected: str) -> bool:
         return actual == expected
 
-    def verify_shell(self, result: dict):
-        return result["returncode"] == 0
+    def verify_shell(self, result: dict) -> bool:
+        return result.get("returncode") == 0

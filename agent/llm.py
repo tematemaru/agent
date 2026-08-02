@@ -36,14 +36,14 @@ FileSystemTools:
 - write_file(path, content)
 
 ShellTool:
-- run(command: list[str])
+- run_shell(command: list[str])
 
 To use a tool:
 Return JSON:
 {
   "state": "ACT",
-  "tool": {
-    "name": "...",
+  "tool_call": {
+    "tool": "...",
     "args": {...}
   }
 }
@@ -52,7 +52,7 @@ You MUST ALWAYS include:
 
 - reasoning (mandatory)
 - state
-- tool (if ACT)
+- tool_call (if ACT)
 
 Even when calling tools, reasoning is required.
 """
@@ -89,13 +89,9 @@ class LLMClient:
 
 
             try:
-                clean = self.extract_json(content)
-                print(clean)
-                data = self.parse(clean)
+                return self.parse(content)
 
-                return AgentResponse.model_validate(data)
-
-            except (json.JSONDecodeError, ValidationError) as e:
+            except (ValueError, json.JSONDecodeError, ValidationError) as e:
                 last_error = e
                 messages.append({
                     "role": "user",

@@ -37,7 +37,7 @@ class Agent:
             )
             runtime.current_step += 1
 
-            prompt = self.planner.build_prompt(runtime)
+            prompt = self.planner.build_prompt(runtime, self.memory)
             self.ui.state("Thinking...")
             response = self.llm.invoke(
                 [
@@ -48,6 +48,11 @@ class Agent:
                 ]
             )
             self.ui.state(response.state)
+
+            if response.reasoning:
+                runtime.scratchpad.append(
+                    f"Step {runtime.current_step}: {response.reasoning}"
+                )
 
             self.telemetry.log(
                 {

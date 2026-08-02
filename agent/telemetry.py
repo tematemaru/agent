@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class TrajectoryLogger:
@@ -8,7 +8,7 @@ class TrajectoryLogger:
 
     def log(self, data: dict):
         enriched = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             **data,
         }
 
